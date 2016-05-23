@@ -1,12 +1,14 @@
-// app/models/nerd.js
-// grab the mongoose module
-var mongoose = require('mongoose');
+/**
+ * Attendee model schema.
+ */
+var mongoose = require('mongoose'),
+ Schema = mongoose.Schema;
 
-// define our nerd model
-// module.exports allows us to pass this to other files when it is called
-module.exports = mongoose.model('Attendee', {
+var AttendeeShcema = new Schema({
   name: {
     type: String,
     default: ''
   }
 });
+
+module.exports = mongoose.model('Attendee', AttendeeShcema);

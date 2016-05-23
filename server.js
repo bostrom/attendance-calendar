@@ -1,52 +1,84 @@
-// server.js
+'use strict';
 
-// modules =================================================
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
+var express = require('express'), // call express
+  app = express(), // define our app using express
+  bodyParser = require('body-parser'),
+  port = process.env.PORT || 8080, // set our port
+  config = require('./config/db'),
+  mongoose = require('mongoose'),
+  db = mongoose.connect(config.url_local);
 
-// configuration ===========================================
-
-// config files
-var db = require('./config/db');
-
-// set our port
-var port = process.env.PORT || 8080;
-
-// connect to our mongoDB database
-// (uncomment after you enter in your own credentials in config/db.js)
-// mongoose.connect(db.url);
-
-// get all data/stuff of the body (POST) parameters
-// parse application/json
-app.use(bodyParser.json());
-
-// parse application/vnd.api+json as json
-app.use(bodyParser.json({
-  type: 'application/vnd.api+json'
-}));
-
-// parse application/x-www-form-urlencoded
+// configure app to use bodyParser()
+// this will let us get the data from a POST
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(bodyParser.json());
 
-// override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
-app.use(methodOverride('X-HTTP-Method-Override'));
 
-// set the static files location /public/img will be /img for users
-app.use(express.static(__dirname + '/public'));
+//////////////////////////
+// REGISTER OUR ROUTES  //
+//////////////////////////
 
-// routes ==================================================
-require('./app/routes')(app); // configure our routes
+// all of our routes will be prefixed with /api
+app.use('/api', require('./app/routes/'));
+app.use('/', function (req, res) {
+  res.send("Api at /api");
+});
+app.use(logErrors);
+app.use(catchValidationErrors);
+app.use(catchIdErrors);
+app.use(catchDuplicateErrors);
+app.use(catchAll);
 
-// start app ===============================================
-// startup our app at http://localhost:8080
+//////////////////
+// START SERVER //
+//////////////////
+
 app.listen(port);
+console.log('Server listening on port ' + port);
 
-// shoutout to the user
-console.log('Magic happens on port ' + port);
+///////////////////////
+// HANDLER FUNCTIONS //
+///////////////////////
 
-// expose app
-exports = module.exports = app;
+function logErrors(err, req, res, next) {
+  console.error(err);
+  console.error(err.stack);
+  next(err);
+}
+
+function catchValidationErrors(err, req, res, next) {
+  if (err && err.name === 'ValidationError') {
+    return res.status(400).send(err);
+  }
+  next(err);
+}
+
+function catchIdErrors(err, req, res, next) {
+  if (err && err.name === 'CastError' && err.kind === 'ObjectId') {
+    return res.status(404).send({
+      error: 'Not found',
+      message: 'Object with id ' + err.value + ' not found.'
+    });
+  }
+  next(err);
+}
+
+function catchDuplicateErrors(err, req, res, next) {
+  if (err && err.code === 11000) {
+    return res.status(404).json({
+      error: 'Duplicate record',
+      message: 'The record cannot be saved due to a duplicate key error'
+    });
+  }
+  next(err);
+}
+
+function catchAll(err, req, res, next) {
+  res.status(500).send({
+    error: 'Unknown error',
+    message: err.message
+  });
+}
+

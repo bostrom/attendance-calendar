@@ -69,13 +69,20 @@
   /////////////////////////////////
   // JSHINT ENVIRONMENT SWITCHES //
   /////////////////////////////////
+  // This option defines globals available when your code is
+  // running inside of the Node runtime environment. Node.js is
+  // a server-side JavaScript environment that uses an asynchronous
+  // event-driven model. This option also skips some warnings that
+  // make sense in the browser environments but don't make sense in
+  // Node such as file-level use strict pragmas and console.log statements.
+  "node": true,
   // This option defines globals exposed by modern browsers:
   // all the way from good old document and navigator to the
   // HTML5 FileReader and other new developments in the browser world.
-  "browser": true,
+  "browser": false,
   // This option defines globals that are usually used for
   // logging poor-man's debugging: console, alert, etc.
-  "devel": true,
+  "devel": false,
 
 
   //////////////////////////////////
@@ -84,6 +91,7 @@
   "overrides": {
     // overrides for app/public directory, enforce more strict rules
     "**/app/public/**/*.js": {
+      "browser": true,
       "devel": false,
       "undef": true,
       "globals": {

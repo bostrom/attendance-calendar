@@ -1,3 +1,3 @@
 module.exports = {
-  url: 'mongodb://localhost/attendance-calendar-dev'
+  url_local: 'mongodb://192.168.99.100:27017/attendance-calendar'
 };
