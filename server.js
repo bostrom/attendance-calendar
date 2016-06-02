@@ -6,7 +6,7 @@ var express = require('express'), // call express
   port = process.env.PORT || 8080, // set our port
   config = require('./config/db'),
   mongoose = require('mongoose'),
-  db = mongoose.connect(config.url_local);
+  db = mongoose.connect(config.db_uri);
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
