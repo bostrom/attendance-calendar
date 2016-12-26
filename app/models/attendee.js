@@ -10,7 +10,10 @@ var AttendeeShcema = new Schema({
     type: String,
     default: ''
   },
-  attendances: [Attendance.schema]
+  defaultAttendance: {
+    type: String,
+    enum: 'absent present'.split(' ')
+  }
 });
 
 module.exports = mongoose.model('Attendee', AttendeeShcema);

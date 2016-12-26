@@ -1,5 +1,7 @@
 'use strict';
 
+var responseFormats = require('./responseFormats');
+
 module.exports = function (Model) {
 
   return {
@@ -8,12 +10,7 @@ module.exports = function (Model) {
         if (err) {
           return next(err);
         }
-        res.json({
-          data: models,
-          meta: {
-            totalItems: models.length
-          }
-        });
+        res.json(responseFormats.list(models));
       });
     },
     // create: function (req, res, next) {

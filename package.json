@@ -1,7 +1,10 @@
 {
   "name": "attendance-calendar",
   "main": "server.js",
-  "start": "node server.js",
+  "scripts": {
+    "start": "node server.js",
+    "repl": "mongoose -s config/mongooser.js mongodb://${DB_HOST}:${DB_PORT}/attendance-calendar -m node_modules/mongoose"
+  },
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "^4.13.4",

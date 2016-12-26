@@ -11,7 +11,8 @@ router.get('/', function (req, res) {
   });
 });
 
-router.use('/attendees', require('./attendees'));
 router.use('/calendars', require('./calendars'));
+router.use('/attendees', require('./attendees'));
+router.use('/attendances', require('./attendances'));
 
 module.exports = router;

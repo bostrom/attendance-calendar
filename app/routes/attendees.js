@@ -32,6 +32,8 @@ router.route('/:id')
       }
 
       attendee.name = req.body.name;
+      // attendee.defaultAttendance = req.body.defaultAttendance;
+      attendee.attendances = req.body.attendances;
 
       attendee.save(function (err) {
         if (err) {
